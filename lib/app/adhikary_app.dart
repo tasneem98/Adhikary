@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '/consts/widgets/centered_container.dart';
 import 'lists.dart';
 
 class AdhikaryApp extends StatefulWidget {
@@ -12,15 +13,20 @@ class AdhikaryApp extends StatefulWidget {
 }
 
 class _AdhikaryAppState extends State<AdhikaryApp> {
-  final _randomNum = Random();
+  final Random _randomNum = Random();
 
-  String _randomAdhkar = '';
+  String _randomZekr = '';
 
   void _anotherZekr() {
     setState(() {
-      _randomAdhkar =
+      _randomZekr =
           AdhkarLists.adhkar[_randomNum.nextInt(AdhkarLists.adhkar.length - 1)];
     });
+    _autoZekr();
+  }
+
+  Future<void> _autoZekr() async {
+    await Future.delayed(const Duration(minutes: 2), () => _anotherZekr());
   }
 
   @override
@@ -33,21 +39,13 @@ class _AdhikaryAppState extends State<AdhikaryApp> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Text(
-                  _randomAdhkar,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
+        body: GestureDetector(
+          onTap: _anotherZekr,
+          child: CenteredContainer(
+            child: Text(
+              _randomZekr,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
           ),
         ),

@@ -14,6 +14,7 @@ class AdhikaryApp extends StatefulWidget {
 }
 
 class _AdhikaryAppState extends State<AdhikaryApp> {
+  // Random zekr generator
   final Random _randomNum = Random();
 
   String _randomZekr = '';
@@ -30,13 +31,21 @@ class _AdhikaryAppState extends State<AdhikaryApp> {
     super.initState();
     _anotherZekr();
 
-    Timer.periodic(const Duration(seconds: 2), (timer) => _anotherZekr());
+    Timer.periodic(
+      const Duration(
+        seconds: 2,
+        //‼️ ToDo: Rewrite this function to be after 15 min
+        // minutes: 15
+      ),
+      (timer) => _anotherZekr(),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         body: CenteredContainer(
           child: Text(
             _randomZekr,

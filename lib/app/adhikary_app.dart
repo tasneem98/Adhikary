@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -22,17 +23,14 @@ class _AdhikaryAppState extends State<AdhikaryApp> {
       _randomZekr =
           AdhkarLists.adhkar[_randomNum.nextInt(AdhkarLists.adhkar.length - 1)];
     });
-    _autoZekr();
-  }
-
-  Future<void> _autoZekr() async {
-    await Future.delayed(const Duration(minutes: 2), () => _anotherZekr());
   }
 
   @override
   void initState() {
     super.initState();
     _anotherZekr();
+
+    Timer.periodic(const Duration(seconds: 2), (timer) => _anotherZekr());
   }
 
   @override

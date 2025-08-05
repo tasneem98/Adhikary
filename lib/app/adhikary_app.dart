@@ -37,14 +37,11 @@ class _AdhikaryAppState extends State<AdhikaryApp> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: GestureDetector(
-          onTap: _anotherZekr,
-          child: CenteredContainer(
-            child: Text(
-              _randomZekr,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
+        body: CenteredContainer(
+          child: Text(
+            _randomZekr,
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
           ),
         ),
 

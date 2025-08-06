@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 
 import '/app/adhikary_app.dart';
+import '/app/home_widget.dart';
 import '/consts/app_theme.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Init Home Widget
+  await HomeWidgetProvider.init();
+
   runApp(const MyApp());
 }
 

@@ -9,7 +9,7 @@ import android.widget.RemoteViews
  * Implementation of App Widget functionality.
  * First: Import HomeWidgetPlugin
  */
-import  es.antonborri.home_widget.HomeWidgetPlugin
+import  es.antonborri.home_widget.HomeWidgetPlugin // ---> Import the home widget plugin
 
 // End of My "Tasneem" Editing
 
@@ -27,22 +27,29 @@ class ZekrWidget : AppWidgetProvider() {
             /**
              * Second: Update the widget
              */
-            val widgetData = HomeWidgetPlugin.getData(context)
-            val views = RemoteViews(context.packageName, R.layout.zekr_widget).apply {
+            val widgetData = HomeWidgetPlugin.getData(context) // --> Get the data from Flutter App
+            val views = RemoteViews(
+                context.packageName,
+                R.layout.zekr_widget
+            ).apply { // --> Apply the layout
 
-                val textFromFlutterApp = widgetData.getString("the_zekr", null)
-                setTextViewText(R.id.zekr_text_id, textFromFlutterApp ?: "No data from Flutter App")
+                val textFromFlutterApp = widgetData.getString("the_zekr", null) // --> Get the data
+                setTextViewText(
+                    R.id.zekr_text_id,
+                    textFromFlutterApp ?: "No data from Flutter App"
+                ) // --> Set the data
+
             }
 
             /**
              * Third: remove this line commented
              */
-        //  updateAppWidget(context, appWidgetManager, appWidgetId)
+            //  updateAppWidget(context, appWidgetManager, appWidgetId) // --> Remove this line
 
             /***
              * Fourth: Update the widget
              */
-            appWidgetManager.updateAppWidget(appWidgetId, views)
+            appWidgetManager.updateAppWidget(appWidgetId, views) // --> Update the widget
 
 // End of My "Tasneem" Editing
 
@@ -63,10 +70,9 @@ internal fun updateAppWidget(
     appWidgetManager: AppWidgetManager,
     appWidgetId: Int
 ) {
-    val widgetText = context.getString(R.string.appwidget_text)
+    val widgetText = context.getString(R.string.appwidget_text) // Edited
     // Construct the RemoteViews object
     val views = RemoteViews(context.packageName, R.layout.zekr_widget)
-    views.setTextViewText(R.id.zekr_text_id, widgetText)
 
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)

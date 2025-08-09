@@ -1,6 +1,6 @@
 import 'package:home_widget/home_widget.dart';
 
-class HomeWidgetProvider {
+class HomeWidgetService {
   // Home Widget data
   static const String _appGroupId = "group.homeScreenApp";
   static const String _iOSWidgetName = "ZekrWidget";

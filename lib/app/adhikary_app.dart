@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:adhikary/services/local_notifications_service.dart';
 import 'package:flutter/material.dart';
 
-import '/app/home_widget.dart';
 import '/consts/widgets/centered_container.dart';
+import '../services/home_widget_service.dart';
 import 'lists.dart';
 
 class AdhikaryApp extends StatefulWidget {
@@ -29,7 +30,7 @@ class _AdhikaryAppState extends State<AdhikaryApp> {
 
   Future<void> _initializeApp() async {
     // Init Home Widget
-    await HomeWidgetProvider.init();
+    await HomeWidgetService.init();
 
     // Get the first zekr
     _anotherZekr();
@@ -52,28 +53,29 @@ class _AdhikaryAppState extends State<AdhikaryApp> {
     });
 
     // Update Home Widget
-    await HomeWidgetProvider.updateWidget(_randomZekr);
+    await HomeWidgetService.updateWidget(_randomZekr);
+
+    // Send local notification
+    await LocalNotificationsService().showNotification(body: _randomZekr);
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        body: CenteredContainer(
-          child: Text(
-            _randomZekr,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      body: CenteredContainer(
+        child: Text(
+          _randomZekr,
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
         ),
+      ),
 
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: ElevatedButton(
-            onPressed: _anotherZekr,
-            child: const Text("ذكر اخر"),
-          ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: ElevatedButton(
+          onPressed: _anotherZekr,
+          child: const Text("ذكر اخر"),
         ),
       ),
     );

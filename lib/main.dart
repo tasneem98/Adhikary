@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '/app/adhikary_app.dart';
-import '/app/home_widget.dart';
 import '/consts/app_theme.dart';
+import '/services/local_notifications_service.dart';
+import 'services/home_widget_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Init Home Widget
-  await HomeWidgetProvider.init();
+  await HomeWidgetService.init();
+
+  // Init local notifications
+  await LocalNotificationsService().init();
 
   runApp(const MyApp());
 }

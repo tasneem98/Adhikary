@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '/app/adhikary_app.dart';
-import '/consts/app_theme.dart';
 import '/services/local_notifications_service.dart';
+import 'core/theme/app_theme.dart';
 import 'services/home_widget_service.dart';
 
 void main() async {
@@ -12,7 +12,7 @@ void main() async {
   await HomeWidgetService.init();
 
   // Init local notifications
-  await LocalNotificationsService().init();
+  await LocalNotificationsService.instance.init();
 
   runApp(const MyApp());
 }

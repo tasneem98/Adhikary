@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '/consts/app_theme.dart';
+import '../../core/theme/app_theme.dart';
 
 class CenteredContainer extends StatelessWidget {
   const CenteredContainer({super.key, required this.child});

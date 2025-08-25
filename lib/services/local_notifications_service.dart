@@ -1,4 +1,4 @@
-import 'dart:developer' as developer;
+import 'dart:developer' as developer show log;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';

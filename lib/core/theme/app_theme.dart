@@ -27,10 +27,23 @@ class AppTheme {
     fontWeight: FontWeight.bold,
   );
 
-  static ThemeData themeData(double screenWidth) => ThemeData(
+  static ThemeData lightTheme(double screenWidth) => ThemeData(
+    brightness: Brightness.light,
     colorScheme: ColorScheme.fromSeed(seedColor: Colors.grey.shade800),
     fontFamily: GoogleFonts.cairo().fontFamily,
     scaffoldBackgroundColor: Colors.white70,
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.white70,
+      centerTitle: true,
+      elevation: 0.0,
+    ),
+    bottomSheetTheme: const BottomSheetThemeData(
+      elevation: 5.0,
+      modalElevation: 5.0,
+      showDragHandle: true,
+      // backgroundColor: Colors.white70,
+      // modalBackgroundColor: Colors.white70,
+    ),
     cardTheme: CardThemeData(
       elevation: 5.0,
       shape: kRoundRectangleBorder,
@@ -65,6 +78,7 @@ class AppTheme {
         fontSize: 20.0,
         fontWeight: FontWeight.bold,
       ),
+      elevation: 5.0,
       behavior: SnackBarBehavior.floating,
       shape: ShapeBorder.lerp(
         kRoundRectangleBorder,

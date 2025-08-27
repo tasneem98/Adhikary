@@ -10,8 +10,7 @@ class AdhikaryApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     return MaterialApp(
-      theme: AppTheme.themeData(screenWidth),
-      // home: const TestWidget(),
+      theme: AppTheme.lightTheme(screenWidth),
       home: const HomePage(),
     );
   }

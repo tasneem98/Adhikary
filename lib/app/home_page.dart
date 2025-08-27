@@ -1,6 +1,6 @@
-import 'dart:async' show Timer;
 import 'dart:math' show Random;
 
+import 'package:adhikary/core/utils/modal_bottom_sheet_helper.dart';
 import 'package:adhikary/main.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -24,12 +24,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // ..........................................................
-  String _timerDisplay = '00:00:00'; // Initial display
-  Timer? _periodicTimer; // Store the timer to cancel it later
-
-  // ..........................................................
-
   // Skeletonizer Initialization
   bool _enableSkeleton = true;
 
@@ -50,35 +44,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _periodicTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      final totalSeconds = timer.tick;
-
-      // Calculate hours, minutes, and seconds
-      final hours = (totalSeconds ~/ 3600); // Integer division for hours
-      final minutes =
-          ((totalSeconds % 3600) ~/ 60); // Remainder divided by 60 for minutes
-      final seconds = (totalSeconds % 60); // Remainder for seconds
-
-      // Format each component to be two digits (e.g., 7 -> "07")
-      final String hoursStr = hours.toString().padLeft(2, '0');
-      final String minutesStr = minutes.toString().padLeft(2, '0');
-      final String secondsStr = seconds.toString().padLeft(2, '0');
-
-      if (mounted) {
-        // Check if the widget is still in the tree
-        setState(() {
-          _timerDisplay = '$hoursStr : $minutesStr : $secondsStr';
-        });
-      }
-    });
-
     _initializeApp();
-  }
-
-  @override
-  void dispose() {
-    _periodicTimer?.cancel();
-    super.dispose();
   }
 
   Future<void> _scheduleZekrTimer() async {
@@ -86,13 +52,11 @@ class _HomePageState extends State<HomePage> {
       periodicZekrTaskName,
       periodicZekrTaskName,
       initialDelay: const Duration(seconds: 3),
-      // frequency: const Duration(minutes: 15),
       constraints: Constraints(
         networkType: NetworkType.notRequired,
         requiresBatteryNotLow: false,
         requiresStorageNotLow: false,
       ),
-      // existingWorkPolicy: ExistingPeriodicWorkPolicy.replace,
     );
   }
 
@@ -148,6 +112,7 @@ class _HomePageState extends State<HomePage> {
     } else {
       await Workmanager().cancelAll();
     }
+    if (mounted) Navigator.pop(context);
   }
 
   Future<void> _enableAppNotifications() async {
@@ -230,19 +195,16 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       extendBodyBehindAppBar: true,
-      body: Skeletonizer(
-        enabled: _enableSkeleton,
-        containersColor: Colors.grey.shade300,
-        effect: const PulseEffect(),
-        enableSwitchAnimation: true,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: MediaQuery.paddingOf(context).top),
-            ),
-            CenteredContainer(
-              child: SwitchListTile(
+      extendBody: true,
+      appBar: AppBar(
+        elevation: 0.0,
+        forceMaterialTransparency: true,
+
+        actions: [
+          IconButton(
+            onPressed: () => ModalBottomSheetHelper.showBottomSheet(
+              context,
+              SwitchListTile(
                 title: Text(
                   'Enable Notifications',
                   style: AppTheme.kText20Bold,
@@ -254,18 +216,22 @@ class _HomePageState extends State<HomePage> {
                 onChanged: _toggleNotifications,
               ),
             ),
-            // Container(color: Colors.red, height: 50.0),
-            CenteredContainer(
-              child: Text(
-                _timerDisplay,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-                textAlign: TextAlign.center,
-              ),
+            icon: const Icon(Icons.settings),
+          ),
+        ],
+      ),
+      body: Skeletonizer(
+        enabled: _enableSkeleton,
+        containersColor: Colors.grey.shade300,
+        effect: const PulseEffect(),
+        enableSwitchAnimation: true,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: MediaQuery.paddingOf(context).top),
             ),
+
             CenteredContainer(
               child: Text(
                 _randomZekr,
@@ -276,14 +242,6 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-
-      /* bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: ElevatedButton(
-          onPressed: _anotherZekr,
-          child: const Text("ذكر اخر"),
-        ),
-      ),*/
     );
   }
 }

@@ -50,6 +50,7 @@ dependencies:
   shared_preferences: ^2.5.3
 
   workmanager:
+  flutter_overlay_window: ^0.5.0
 
 
 

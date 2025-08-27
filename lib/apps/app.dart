@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '/app/home_page.dart';
+// import '/apps/overlay_app.dart';
 import '/core/theme/app_theme.dart';
+import '/screens/home_page.dart';
 
 class AdhikaryApp extends StatelessWidget {
   const AdhikaryApp({super.key});
@@ -11,7 +12,7 @@ class AdhikaryApp extends StatelessWidget {
     final double screenWidth = MediaQuery.of(context).size.width;
     return MaterialApp(
       theme: AppTheme.themeData(screenWidth),
-      // home: const TestWidget(),
+      // home: const AzkaryOverlayApp(),
       home: const HomePage(),
     );
   }

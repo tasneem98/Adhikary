@@ -1,8 +1,9 @@
 import 'dart:async' show Timer;
+import 'dart:developer' as developer show log;
 import 'dart:math' show Random;
 
-import 'package:adhikary/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:workmanager/workmanager.dart';
@@ -11,6 +12,7 @@ import '/consts/widgets/centered_container.dart';
 import '/core/theme/app_theme.dart';
 import '/core/utils/alert_dialog_helper.dart';
 import '/core/utils/snack_bar_helper.dart';
+import '/main.dart';
 import '/services/home_widget_service.dart';
 import '/services/local_notifications_service.dart';
 import '/services/shared_preference_services.dart';
@@ -39,6 +41,9 @@ class _HomePageState extends State<HomePage> {
 
   // Notification Permissions
   bool _enableNotifications = false;
+
+  // Overlay Permissions
+  bool _enableOverlay = false;
 
   // Shared Preferences
   final SharedPreferenceServices _shared = SharedPreferenceServices();
@@ -98,13 +103,17 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _initializeApp() async {
     // Get notification status
-    final bool enabled = await _shared.getBool(
+    final bool notificationEnabled = await _shared.getBool(
       SharedPreferenceServices.enableNotification,
+    );
+    final bool overlayEnabled = await _shared.getBool(
+      SharedPreferenceServices.enableOverLayWindow,
     );
 
     if (mounted) {
       setState(() {
-        _enableNotifications = enabled;
+        _enableNotifications = notificationEnabled;
+        _enableOverlay = overlayEnabled;
         _enableSkeleton = false;
       });
     }
@@ -134,7 +143,7 @@ class _HomePageState extends State<HomePage> {
     await HomeWidgetService.updateWidget(_randomZekr);
   }
 
-  // Notification Permission Logic
+  ///... Notification Permission Logic
 
   Future<void> _toggleNotifications(bool enable) async {
     if (enable) {
@@ -162,7 +171,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     if (notificationIsGranted || notificationRequestedAndGranted) {
-      await _updateNotificationPreferences(true);
+      await _updateEnabledPreferences(key: 'notifications', enabled: true);
     } else {
       final PermissionStatus currentStatus =
           await Permission.notification.status;
@@ -182,21 +191,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _disableNotifications() async {
     await _notificationsService.cancelAllNotification();
-    await _updateNotificationPreferences(false);
-  }
-
-  Future<void> _updateNotificationPreferences(bool enabled) async {
-    await _shared.setBool(
-      key: SharedPreferenceServices.enableNotification,
-      value: enabled,
-    );
-    if (mounted) {
-      setState(() => _enableNotifications = enabled);
-      SnackBarHelper.showSnackBar(
-        context,
-        message: 'Notifications ${enabled ? "Enabled" : "Disabled"}',
-      );
-    }
+    await _updateEnabledPreferences(key: 'notifications', enabled: false);
   }
 
   Future<void>
@@ -212,7 +207,7 @@ class _HomePageState extends State<HomePage> {
 
         final statusAfterSettings = await Permission.notification.status;
         if (statusAfterSettings.isGranted) {
-          await _updateNotificationPreferences(true);
+          await _updateEnabledPreferences(key: 'notifications', enabled: true);
         } else if (mounted) {
           SnackBarHelper.showSnackBar(
             context,
@@ -224,6 +219,63 @@ class _HomePageState extends State<HomePage> {
       child: const Text('Go To Settings'),
     ),
   );
+
+  ///... Overlay Permissions Logic
+  Future<void> _toggleOverlay(bool enabled) async {
+    if (enabled) {
+      print('Overlay is enabled');
+      await _enableOverlayWindow();
+    } else {
+      print('Overlay is disabled');
+      await _disableOverlayWindow();
+    }
+  }
+
+  bool overlayIsGranted = false;
+
+  Future<void> _enableOverlayWindow() async {
+    final bool? isGranted = await FlutterOverlayWindow.requestPermission();
+    developer.log(
+      ' ----- Overlay Request Is Granted: $isGranted -> isCalled -----',
+    );
+    final overlayRequest = await FlutterOverlayWindow.isPermissionGranted();
+    developer.log(' ----- Overlay Status Is: $isGranted -> isCalled -----');
+    await _updateEnabledPreferences(key: 'overlay-window', enabled: true);
+    setState(() {
+      _enableOverlay = isGranted!;
+      overlayIsGranted = overlayRequest;
+    });
+  }
+
+  Future<void> _disableOverlayWindow() async {
+    await FlutterOverlayWindow.closeOverlay();
+    await _updateEnabledPreferences(key: 'overlay-window', enabled: false);
+  }
+
+  Future<void> _updateEnabledPreferences({
+    required String key,
+    required bool enabled,
+  }) async {
+    print('Updating $key to $enabled');
+
+    await _shared.setBool(
+      key: key == 'notifications'
+          ? SharedPreferenceServices.enableNotification
+          : SharedPreferenceServices.enableOverLayWindow,
+
+      value: enabled,
+    );
+    if (mounted) {
+      key == 'notifications'
+          ? setState(() => _enableNotifications = enabled)
+          : setState(() => _enableOverlay = enabled);
+      SnackBarHelper.showSnackBar(
+        context,
+        message:
+            '${key == 'notifications' ? 'Notifications' : 'Overlay Window'} ${enabled ? "Enabled" : "Disabled"}',
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -254,7 +306,19 @@ class _HomePageState extends State<HomePage> {
                 onChanged: _toggleNotifications,
               ),
             ),
-            // Container(color: Colors.red, height: 50.0),
+            CenteredContainer(
+              child: SwitchListTile(
+                title: Text(
+                  'Enable Overlay Window',
+                  style: AppTheme.kText20Bold,
+                ),
+                subtitle: const Text(
+                  'Allow overlay window to be shown when app is in background',
+                ),
+                value: _enableOverlay,
+                onChanged: _toggleOverlay,
+              ),
+            ),
             CenteredContainer(
               child: Text(
                 _timerDisplay,
@@ -276,14 +340,6 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-
-      /* bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: ElevatedButton(
-          onPressed: _anotherZekr,
-          child: const Text("ذكر اخر"),
-        ),
-      ),*/
     );
   }
 }

@@ -86,7 +86,6 @@ void callbackDispatcher() {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Workmanager().cancelAll();
 
   developer.log(
     'Main function called at ${DateTime.now().toHourMinuteSecond12Format}',

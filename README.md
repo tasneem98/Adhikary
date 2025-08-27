@@ -1,4 +1,4 @@
-# adhikary
+# أذكــارى 
 
 Is an application to notify you for ذكر الله every 15 mins
 

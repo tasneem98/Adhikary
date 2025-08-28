@@ -51,7 +51,7 @@ dependencies:
 
   workmanager:
 
-
+  flutter_overlay_window:
 
 dev_dependencies:
   flutter_test:

@@ -60,7 +60,7 @@ To run the project:
 - [x] Basic Home Screen Widget integration (displaying current Zekr). *(Marked as done based on features list)*
 - [x] Notification permission handling and enable/disable toggle. *(Marked as done)*
 
-- [x] Implement a bottom sheet or dialog to confirm/manage notification preferences when first enabling.
+- [ ] Implement a bottom sheet or dialog to confirm/manage notification preferences when first enabling.
 - [ ] Add a dedicated button or UI element to explicitly trigger an update/refresh of the home screen widget.
 - [ ] Allow users to customize the notification frequency (e.g., every 15 min, 30 min, 1 hour).
 - [ ] Add a wider variety of Adhkar, potentially categorized (e.g., morning/evening Adhkar, Adhkar after Salah).

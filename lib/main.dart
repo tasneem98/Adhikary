@@ -4,11 +4,13 @@ import 'dart:math' show Random;
 import 'package:flutter/material.dart';
 import 'package:workmanager/workmanager.dart';
 
-import '/app.dart';
+import '/core/extensions/date_time.dart';
+import '/screens/lists.dart';
 import '/services/home_widget_service.dart';
 import '/services/local_notifications_service.dart';
 import '/services/shared_preference_services.dart';
-import 'app/lists.dart';
+import 'apps/app.dart';
+import 'apps/overlay_app.dart';
 
 const String periodicZekrTaskName = "com.tmi_group.adhikary.periodicZekrTask";
 
@@ -84,6 +86,19 @@ void callbackDispatcher() {
   });
 }
 
+@pragma("vm:entry-point")
+void overlayMain() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(
+    const MaterialApp(
+      debugShowCheckedModeBanner: false,
+
+      home: AzkaryOverlayApp(),
+    ),
+  );
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // await Workmanager().cancelAll();
@@ -105,9 +120,4 @@ void main() async {
   }
 
   runApp(const AdhikaryApp());
-}
-
-extension DateTimeExtension on DateTime {
-  String get toHourMinuteSecond12Format =>
-      '${hour > 12 ? (hour - 12).toString().padLeft(2, '0') : hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}:${second.toString().padLeft(2, '0')} ${hour > 12 ? 'PM' : 'AM'}';
 }
